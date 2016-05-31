@@ -1,0 +1,1 @@
+node_modules/browserify/bin/cmd.js -t babelify src/app.jsx -o www/bundle.js
