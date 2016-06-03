@@ -8,6 +8,9 @@ var currentQueue;
 var queueIndex = -1;
 
 function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
     draining = false;
     if (currentQueue.length) {
         queue = currentQueue.concat(queue);
@@ -27934,18 +27937,18 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  listen: function (target, eventType, callback) {
+  listen: function listen(target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, false);
       return {
-        remove: function () {
+        remove: function remove() {
           target.removeEventListener(eventType, callback, false);
         }
       };
     } else if (target.attachEvent) {
       target.attachEvent('on' + eventType, callback);
       return {
-        remove: function () {
+        remove: function remove() {
           target.detachEvent('on' + eventType, callback);
         }
       };
@@ -27960,11 +27963,11 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  capture: function (target, eventType, callback) {
+  capture: function capture(target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, true);
       return {
-        remove: function () {
+        remove: function remove() {
           target.removeEventListener(eventType, callback, true);
         }
       };
@@ -27978,7 +27981,7 @@ var EventListener = {
     }
   },
 
-  registerDefault: function () {}
+  registerDefault: function registerDefault() {}
 };
 
 module.exports = EventListener;
@@ -28102,7 +28105,7 @@ module.exports = camelizeStyleName;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @typechecks
+ *
  */
 
 var isTextNode = require('./isTextNode');
@@ -28111,10 +28114,6 @@ var isTextNode = require('./isTextNode');
 
 /**
  * Checks if a given DOM node contains or is another DOM node.
- *
- * @param {?DOMNode} outerNode Outer DOM node.
- * @param {?DOMNode} innerNode Inner DOM node.
- * @return {boolean} True if `outerNode` contains or is `innerNode`.
  */
 function containsNode(outerNode, innerNode) {
   if (!outerNode || !innerNode) {
@@ -28125,7 +28124,7 @@ function containsNode(outerNode, innerNode) {
     return false;
   } else if (isTextNode(innerNode)) {
     return containsNode(outerNode, innerNode.parentNode);
-  } else if (outerNode.contains) {
+  } else if ('contains' in outerNode) {
     return outerNode.contains(innerNode);
   } else if (outerNode.compareDocumentPosition) {
     return !!(outerNode.compareDocumentPosition(innerNode) & 16);
@@ -28361,6 +28360,7 @@ module.exports = createNodesFromMarkup;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ *
  */
 
 function makeEmptyFunction(arg) {
@@ -28374,7 +28374,7 @@ function makeEmptyFunction(arg) {
  * primarily useful idiomatically for overridable function endpoints which
  * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
  */
-function emptyFunction() {}
+var emptyFunction = function emptyFunction() {};
 
 emptyFunction.thatReturns = makeEmptyFunction;
 emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
@@ -28815,7 +28815,7 @@ var invariant = require('./invariant');
  * @param {object} obj
  * @return {object}
  */
-var keyMirror = function (obj) {
+var keyMirror = function keyMirror(obj) {
   var ret = {};
   var key;
   !(obj instanceof Object && !Array.isArray(obj)) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'keyMirror(...): Argument must be an object.') : invariant(false) : void 0;
@@ -28853,7 +28853,7 @@ module.exports = keyMirror;
  * 'xa12' in that case. Resolve keys you want to use once at startup time, then
  * reuse those resolutions.
  */
-var keyOf = function (oneKeyObj) {
+var keyOf = function keyOf(oneKeyObj) {
   var key;
   for (key in oneKeyObj) {
     if (!oneKeyObj.hasOwnProperty(key)) {
@@ -28925,6 +28925,7 @@ module.exports = mapObject;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ *
  * @typechecks static-only
  */
 
@@ -28932,9 +28933,6 @@ module.exports = mapObject;
 
 /**
  * Memoizes the return value of a function that accepts one string argument.
- *
- * @param {function} callback
- * @return {function}
  */
 
 function memoizeStringOnly(callback) {
@@ -28995,11 +28993,11 @@ var performanceNow;
  * because of Facebook's testing infrastructure.
  */
 if (performance.now) {
-  performanceNow = function () {
+  performanceNow = function performanceNow() {
     return performance.now();
   };
 } else {
-  performanceNow = function () {
+  performanceNow = function performanceNow() {
     return Date.now();
   };
 }
@@ -29015,7 +29013,7 @@ module.exports = performanceNow;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @typechecks
- * 
+ *
  */
 
 /*eslint-disable no-self-compare */
@@ -29098,7 +29096,7 @@ var emptyFunction = require('./emptyFunction');
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  warning = function (condition, format) {
+  warning = function warning(condition, format) {
     for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
       args[_key - 2] = arguments[_key];
     }
@@ -29132,8 +29130,8 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = warning;
 }).call(this,require('_process'))
 },{"./emptyFunction":146,"_process":1}],165:[function(require,module,exports){
-/* eslint-disable no-unused-vars */
 'use strict';
+/* eslint-disable no-unused-vars */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -29145,7 +29143,51 @@ function toObject(val) {
 	return Object(val);
 }
 
-module.exports = Object.assign || function (target, source) {
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (e) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	var from;
 	var to = toObject(target);
 	var symbols;
@@ -29265,6 +29307,9 @@ var ConstructionSite = React.createClass({
 
     render: function () {
         var location = this.props.location;
+        var topSpace = {
+            margin: '15px 0 0 0'
+        };
         return React.createElement(
             'div',
             null,
@@ -29275,12 +29320,12 @@ var ConstructionSite = React.createClass({
             ),
             React.createElement(
                 'button',
-                { onClick: this.constructionSiteOversightInspectionHandler },
+                { className: 'button-primary bottom-space right-space', onClick: this.constructionSiteOversightInspectionHandler },
                 'Perform Inspection'
             ),
             React.createElement(
                 'button',
-                { onClick: this.constructionSitesListHandler },
+                { className: 'button-default bottom-space', onClick: this.constructionSitesListHandler },
                 'Back to Construction Sites'
             ),
             React.createElement(
@@ -29649,7 +29694,7 @@ var ConstructionSite = React.createClass({
             ),
             React.createElement(
                 'button',
-                { onClick: this.constructionSitesListHandler },
+                { className: 'button-default full-width', onClick: this.constructionSitesListHandler },
                 'Back to Construction Sites'
             )
         );
@@ -29731,19 +29776,19 @@ var ConstructionSiteOversightInspection = React.createClass({
       'div',
       null,
       React.createElement(
-        'h4',
+        'h2',
         null,
         'Oversight Inspection Form'
       ),
       React.createElement('div', null),
       React.createElement(
         'button',
-        { type: 'button', onClick: this.submitForm },
+        { className: 'button-primary full-width bottom-space', type: 'button', onClick: this.submitForm },
         'Submit'
       ),
       React.createElement(
         'button',
-        { type: 'button', onClick: this.leaveForm },
+        { className: 'button-warning full-width', type: 'button', onClick: this.leaveForm },
         'Cancel'
       )
     );
@@ -29907,21 +29952,17 @@ module.exports = ConstructionSitesList;
 var React = require('react');
 
 var Footer = React.createClass({
-  displayName: "Footer",
+  displayName: 'Footer',
 
 
   render: function () {
     return React.createElement(
-      "footer",
+      'footer',
       null,
       React.createElement(
-        "p",
-        null,
-        React.createElement(
-          "a",
-          { href: "#" },
-          "Visit Full Site"
-        )
+        'a',
+        { className: 'button-secondary full-width', href: '#' },
+        'Visit Full Site'
       )
     );
   }
@@ -29940,7 +29981,7 @@ var Header = React.createClass({
   render: function () {
     return React.createElement(
       'header',
-      null,
+      { className: 'masthead' },
       React.createElement(
         'h1',
         null,
@@ -30328,7 +30369,7 @@ XFormR.registerRenderer('xf:form', function ($def) {
     var $form = $('<form>').append(this.renderDefinition($def.children())),
         $pages = $form.children('[data-page]').hide();
     if ($pages.length > 0) {
-        var $pagesSelector = $('<div data-pages-selector>'),
+        var $pagesSelector = $('<div class="pagination" data-pages-selector>'),
             $previousPageButtonTop = $('<button type="button">').text('Previous').click(function () {
             if (pageIdx > 1) {
                 buttons[pageIdx - 1].click();
@@ -30391,7 +30432,7 @@ XFormR.registerRenderer('xf:image', function ($def, data) {
     var $ele = this.renderType('xf:input', $def.attr('type', 'file').attr('accept', 'image/*'), data),
         $input = $ele.find('input'),
         $preview = $('<img>').hide().insertBefore($input),
-        $clearButton = $('<button type="button" data-image-remove>').text('Clear Image').hide().insertBefore($input);
+        $clearButton = $('<button class="button-warning" type="button" data-image-remove>').text('Clear Image').hide().insertBefore($input);
     $input.change(function () {
         if (this.files && this.files[0]) {
             var reader = new FileReader();
@@ -30430,7 +30471,7 @@ XFormR.registerRenderer('xf:multivalue', function ($def) {
             instanceDef = $(self.createXmlTag('xf:group')).attr('name', fieldName).append($def.children().clone()),
             $output = self.renderDefinition(instanceDef),
             multivalueIndex = counter,
-            $removeButton = $('<button>').text(removeButtonText).click(function () {
+            $removeButton = $('<button class="button-warning float-right bottom-space" style="margin-right: -6px;">').text(removeButtonText).click(function () {
             $output.remove();
             // decrement all multivalues after this
             var i = multivalueIndex + 1,
@@ -30450,7 +30491,7 @@ XFormR.registerRenderer('xf:multivalue', function ($def) {
         counter++;
         return $output;
     },
-        $button = $('<button type="button">').text(addButtonText).click(function () {
+        $button = $('<button class="full-width button-success" type="button">').text(addButtonText).click(function () {
         var $output = createMultivalueGroup.call(this);
         self.invokeAfterRenderCallbacks($output);
     });

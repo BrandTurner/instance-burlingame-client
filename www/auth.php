@@ -38,11 +38,11 @@ if (!isset($_GET['code'])) {
             'code' => $_GET['code'],
             'verify' => false
         ]);
-        
+
         $session = new OAuth2Session($provider, $accessToken);
         $request = $session->getRequest('user');
         $authorization = $request->getHeader('Authorization');
-        
+
         ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +58,7 @@ if (!isset($_GET['code'])) {
 </html>
 
         <?php
-        
+
 
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
 

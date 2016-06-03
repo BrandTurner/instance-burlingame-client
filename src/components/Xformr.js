@@ -1,17 +1,17 @@
 var XFormR = (function(){
-    
+
     var renderers = {};
-    
+
     return {
-        
+
         registerRenderer: function(name, callback){
             if(!renderers[name])
                 renderers[name] = [];
             renderers[name].push(callback);
         },
-        
+
         Factory: function(options){
-            
+
             var self = this,
                 _$def,
                 _data = {},
@@ -20,40 +20,40 @@ var XFormR = (function(){
                 DEFAULT_APPLICABLE_HTML_ATTRIBUTES = [
                     'style', 'class'
                 ];
-                
+
             this.options = options;
-                
+
             this.registerRenderer = function(name, callback){
                 if(!renderers[name])
                     renderers[name] = [];
                 _renderers[name].push(callback);
             };
-            
+
             this.setDefinition = function(xml){
                 _$def = $(xml).children().first();
             };
-            
+
             this.setData = function(data){
                 _data = data;
             }
-            
+
             this.render = function(){
                 var $output = this.renderDefinition(_$def);
                 this.invokeAfterRenderCallbacks($output);
                 return $output;
             };
-            
+
             this.afterRender = function(callback){
                 _afterRenderCallbacks.push(callback);
             };
-            
+
             this.invokeAfterRenderCallbacks = function($output) {
                 $.each(_afterRenderCallbacks, function(idx, callback){
                     callback.call(self, $output);
                 });
                 _afterRenderCallbacks = [];
             };
-            
+
             this.renderType = function(name, $def){
                 if(name.indexOf('xf:') === 0){
                     var $ele;
@@ -108,7 +108,7 @@ var XFormR = (function(){
                     return $ele;
                 }
             };
-            
+
             this.applyHtmlAttributesFromDef = function($ele, def, applicableAttributes){
                 if(applicableAttributes === undefined)
                     applicableAttributes = DEFAULT_APPLICABLE_HTML_ATTRIBUTES;
@@ -124,7 +124,7 @@ var XFormR = (function(){
                             $ele.attr(attrName, attrValue);
                 }
             };
-            
+
             this.renderDefinition = function($def){
                 if($def.length == 1){
                     return self.renderType($def.first().prop('tagName'), $def.first());
@@ -136,13 +136,13 @@ var XFormR = (function(){
                     return '';
                 }
             };
-            
+
             this.getFieldData = function($def){
                 return this.getFieldDataFromSegments(this.getFieldSegments($def));
             }
-            
+
             this.getFieldDataFromSegments = function(segments){
-                var data = _data, 
+                var data = _data,
                     segment;
                 while((segment = segments.shift()) !== undefined){
                     var match;
@@ -161,22 +161,22 @@ var XFormR = (function(){
             this.getFieldName = function($def){
                 return this.getFieldSegments($def).join('|');
             };
-            
+
             this.getFieldSegments = function($def){
-                
+
                 var segments = [],
-                    
+
                     // .parents() returns in child -> parent order, so reverse and then loop
                     // so we get segments in parent -> child order
                     inheritanceTree = $def.parents('[name]').get().reverse();
-            
+
                 // add the current definition to the inheritanceTree
                 inheritanceTree.push($def.get());
-                
+
                 $(inheritanceTree).each(function(){
-                    
+
                     var name = $(this).attr('name');
-                        
+
                     // if names does not have a bar in it, then this is a simple key
                     if(name.indexOf('|') == -1){
                         segments.push(name);
@@ -187,12 +187,12 @@ var XFormR = (function(){
                             segments.push(name);
                         });
                     }
-                    
+
                 });
-                
+
                 return segments;
             };
-            
+
             this.getLabel = function($def){
                 return $def.attr('label');
             };
@@ -202,7 +202,7 @@ var XFormR = (function(){
             };
         }
     };
-    
+
 })();
 
 XFormR.registerRenderer('xf:boolean', function($def){
@@ -231,25 +231,25 @@ XFormR.registerRenderer('xf:boolean', function($def){
 });
 
 XFormR.registerRenderer('xf:date', function($def, data){
-    
+
     var $ele = this.renderType('xf:input', $def.attr('type', 'date'), data),
         $input = $ele.find('input');
-    
+
     if(this.getFieldData($def) === undefined){
         switch($def.attr('default')){
             case 'today': $input.val(new Date().toISOString().substring(0,10)); break;
         }
     }
-    
+
     return $ele;
-    
+
 });
 
 XFormR.registerRenderer('xf:form', function($def){
     var $form = $('<form>').append(this.renderDefinition($def.children())),
         $pages = $form.children('[data-page]').hide();
     if($pages.length > 0){
-        var $pagesSelector = $('<div data-pages-selector>'),
+        var $pagesSelector = $('<div class="pagination" data-pages-selector>'),
             $previousPageButtonTop = $('<button type="button">').text('Previous').click(function(){
                 if(pageIdx > 1){ buttons[pageIdx - 1].click(); }
             }),
@@ -313,7 +313,7 @@ XFormR.registerRenderer('xf:image', function($def, data){
     var $ele = this.renderType('xf:input', $def.attr('type', 'file').attr('accept', 'image/*'), data),
         $input = $ele.find('input'),
         $preview = $('<img>').hide().insertBefore($input),
-        $clearButton = $('<button type="button" data-image-remove>').text('Clear Image').hide().insertBefore($input);
+        $clearButton = $('<button class="button-warning" type="button" data-image-remove>').text('Clear Image').hide().insertBefore($input);
     $input.change(function(){
         if (this.files && this.files[0]) {
             var reader = new FileReader();
@@ -353,7 +353,7 @@ XFormR.registerRenderer('xf:multivalue', function($def){
                 instanceDef = $(self.createXmlTag('xf:group')).attr('name', fieldName).append($def.children().clone()),
                 $output = self.renderDefinition(instanceDef),
                 multivalueIndex = counter,
-                $removeButton = $('<button>')
+                $removeButton = $('<button class="button-warning float-right bottom-space" style="margin-right: -6px;">')
                     .text(removeButtonText)
                     .click(function(){
                         $output.remove();
@@ -375,7 +375,7 @@ XFormR.registerRenderer('xf:multivalue', function($def){
             counter++;
             return $output;
         },
-        $button = $('<button type="button">').text(addButtonText).click(function(){
+        $button = $('<button class="full-width button-success" type="button">').text(addButtonText).click(function(){
             var $output = createMultivalueGroup.call(this);
             self.invokeAfterRenderCallbacks($output);
         });

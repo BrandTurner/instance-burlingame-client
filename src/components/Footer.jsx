@@ -4,7 +4,7 @@ var Footer = React.createClass({
 
   render: function() {
     return <footer>
-        <p><a href="#">Visit Full Site</a></p>
+        <a className={('button-secondary full-width')} href="#">Visit Full Site</a>
     </footer>;
   }
 
