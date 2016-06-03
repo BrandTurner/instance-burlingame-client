@@ -10,7 +10,7 @@ $ = jQuery;
 
 var ConstructionSiteOversightInspection = React.createClass({
 
-  endpoint: 'http://localhost/sites/instance-honolulu/public/api/construction/locations/oversight-inspection',
+  endpoint: 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection',
 
   getInitialState: function(){
     return {

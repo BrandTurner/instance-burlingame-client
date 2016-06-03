@@ -28105,7 +28105,7 @@ module.exports = camelizeStyleName;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * 
+ *
  */
 
 var isTextNode = require('./isTextNode');
@@ -28360,7 +28360,7 @@ module.exports = createNodesFromMarkup;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * 
+ *
  */
 
 function makeEmptyFunction(arg) {
@@ -28925,7 +28925,7 @@ module.exports = mapObject;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * 
+ *
  * @typechecks static-only
  */
 
@@ -29013,7 +29013,7 @@ module.exports = performanceNow;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @typechecks
- * 
+ *
  */
 
 /*eslint-disable no-self-compare */
@@ -29243,7 +29243,7 @@ var App = React.createClass({
   getInitialState: function () {
     return {
       component: React.createElement(ConstructionSitesList, { app: this }),
-      user: StateManager.get(this, 'user', 'http://localhost/sites/instance-honolulu/public/api/user')
+      user: StateManager.get(this, 'user', 'http://localhost/instance-honolulu/public/api/user')
     };
   },
 
@@ -29744,7 +29744,7 @@ var ConstructionSiteOversightInspection = React.createClass({
   displayName: 'ConstructionSiteOversightInspection',
 
 
-  endpoint: 'http://localhost/sites/instance-honolulu/public/api/construction/locations/oversight-inspection',
+  endpoint: 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection',
 
   getInitialState: function () {
     return {
@@ -29868,8 +29868,8 @@ var ConstructionSitesList = React.createClass({
 
   getInitialState: function () {
     return {
-      constructionLocations: StateManager.get(this, 'constructionLocations', 'http://localhost/sites/instance-honolulu/public/api/construction/locations'),
-      constructionLocationOversightInspection: StateManager.get(this, 'constructionLocationOversightInspection', 'http://localhost/sites/instance-honolulu/public/api/construction/locations/oversight-inspection')
+      constructionLocations: StateManager.get(this, 'constructionLocations', 'http://localhost/instance-honolulu/public/api/construction/locations'),
+      constructionLocationOversightInspection: StateManager.get(this, 'constructionLocationOversightInspection', 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection')
     };
   },
 

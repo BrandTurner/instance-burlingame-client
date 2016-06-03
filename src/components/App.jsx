@@ -12,7 +12,7 @@ var App = React.createClass({
   getInitialState: function(){
     return {
         component: <ConstructionSitesList app={this} />,
-        user: StateManager.get(this, 'user', 'http://localhost/sites/instance-honolulu/public/api/user')
+        user: StateManager.get(this, 'user', 'http://localhost/instance-honolulu/public/api/user')
     };
   },
 

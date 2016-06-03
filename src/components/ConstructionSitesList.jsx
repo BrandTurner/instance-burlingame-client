@@ -9,9 +9,9 @@ var ConstructionSitesList = React.createClass({
   getInitialState: function(){
     return {
         constructionLocations: StateManager.get(this, 'constructionLocations',
-                    'http://localhost/sites/instance-honolulu/public/api/construction/locations'),
+                    'http://localhost/instance-honolulu/public/api/construction/locations'),
         constructionLocationOversightInspection: StateManager.get(this, 'constructionLocationOversightInspection',
-                    'http://localhost/sites/instance-honolulu/public/api/construction/locations/oversight-inspection')
+                    'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection')
     };
   },
 

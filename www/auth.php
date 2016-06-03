@@ -5,7 +5,7 @@ require_once dirname(dirname(__FILE__)).'/vendor/autoload.php';
 use CloudCompli\InstanceClient\OAuth2Provider;
 use CloudCompli\InstanceClient\OAuth2Session;
 
-$cloudcompliUrl = 'http://localhost/sites/instance-honolulu/public';
+$cloudcompliUrl = 'http://localhost/instance-honolulu/public';
 $clientId = 'mobileid';
 $clientSecret = 'mobilepass';
 $scriptUrl = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].(($_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') ? (':'.$_SERVER['SERVER_PORT']) : '').$_SERVER['SCRIPT_NAME'];
