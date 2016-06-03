@@ -4,7 +4,7 @@ var Header = React.createClass({
 
   render: function() {
     return <header className={('masthead')}>
-      <h1>ch2m Honolulu</h1>
+      <h1>ch2m Honolulu Mobile</h1>
     </header>;
   }
 

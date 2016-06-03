@@ -4,6 +4,11 @@ var $ = jQuery;
 var Statemanager = new function(){
     
     var results = {};
+    
+    this.getStored = function(stateDataName){
+        var storedResult = localStorage.getItem("state-"+stateDataName);
+        return storedResult ? JSON.parse(storedResult) : null;
+    }
 
     this.get = function(context, stateDataName, url){
         
@@ -61,8 +66,6 @@ var Statemanager = new function(){
                             state[stateDataName] = {type: null}
                             context.setState(state);
                         }
-                        console.log(storedResult);
-                        console.log(jqXHR, textStatus, errorThrown)
                 }
             }
         });

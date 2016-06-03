@@ -1,5 +1,6 @@
 var React = require('react');
 var jQuery = require('jquery');
+var Config = require('./Config.js');
 var $ = jQuery;
 var Header = require('./Header.jsx');
 var ConstructionSitesList = require('./ConstructionSitesList.jsx');
@@ -12,12 +13,12 @@ var App = React.createClass({
   getInitialState: function(){
     return {
         component: <ConstructionSitesList app={this} />,
-        user: StateManager.get(this, 'user', 'http://localhost/instance-honolulu/public/api/user')
+        user: StateManager.get(this, 'user', Config.apiUrl+'/user')
     };
   },
 
   render: function() {
-    Sendqueue.sendAll();
+    $("html, body").animate({ scrollTop: 0 }, 0);
     if(this.state.user){
       if(this.state.user.type !== null){
         return this.renderContainer();
@@ -31,24 +32,32 @@ var App = React.createClass({
 
   renderContainer: function() {
     return <div>
-        <Header />
+        <Header app={this} />
         <main>
             { this.state.component }
         </main>
-        <Footer />
+        <Footer app={this} />
       </div>;
   },
 
   renderLoading: function() {
-    return <main>
-        Loading...
-      </main>;
+    return <div>
+        <Header app={this} />
+        <main>
+            <div className={("loader")}>Loading...</div>
+        </main>
+        <Footer app={this} />
+      </div>;
   },
 
   renderNoData: function() {
-    return <main>
-        Not connected and no data cached.
-      </main>;
+    return <div>
+        <Header app={this} />
+        <main>
+            Not connected and no data cached.
+        </main>
+        <Footer app={this} />
+      </div>;
   }
 
 });

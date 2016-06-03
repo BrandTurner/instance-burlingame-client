@@ -11,7 +11,6 @@ var Sendqueue = new function(){
             },
             data: data,
             success: function(result){
-                console.log(result);
                 if(shouldSendAll !== false)
                     self.sendAll();
             },
@@ -52,6 +51,18 @@ var Sendqueue = new function(){
             self.send(item.endpoint, item.data, false);
         });
         
+    }
+    
+    this.getAll = function(){
+        
+        var currentQueue = localStorage.getItem(QUEUE_NAME);
+        
+        if(!currentQueue)
+            return [];
+        
+        currentQueue = JSON.parse(currentQueue);
+        
+        return currentQueue;
     }
 
 };

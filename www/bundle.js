@@ -8,9 +8,6 @@ var currentQueue;
 var queueIndex = -1;
 
 function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
     draining = false;
     if (currentQueue.length) {
         queue = currentQueue.concat(queue);
@@ -27937,18 +27934,18 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  listen: function listen(target, eventType, callback) {
+  listen: function (target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, false);
       return {
-        remove: function remove() {
+        remove: function () {
           target.removeEventListener(eventType, callback, false);
         }
       };
     } else if (target.attachEvent) {
       target.attachEvent('on' + eventType, callback);
       return {
-        remove: function remove() {
+        remove: function () {
           target.detachEvent('on' + eventType, callback);
         }
       };
@@ -27963,11 +27960,11 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  capture: function capture(target, eventType, callback) {
+  capture: function (target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, true);
       return {
-        remove: function remove() {
+        remove: function () {
           target.removeEventListener(eventType, callback, true);
         }
       };
@@ -27981,7 +27978,7 @@ var EventListener = {
     }
   },
 
-  registerDefault: function registerDefault() {}
+  registerDefault: function () {}
 };
 
 module.exports = EventListener;
@@ -28105,7 +28102,7 @@ module.exports = camelizeStyleName;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- *
+ * @typechecks
  */
 
 var isTextNode = require('./isTextNode');
@@ -28114,6 +28111,10 @@ var isTextNode = require('./isTextNode');
 
 /**
  * Checks if a given DOM node contains or is another DOM node.
+ *
+ * @param {?DOMNode} outerNode Outer DOM node.
+ * @param {?DOMNode} innerNode Inner DOM node.
+ * @return {boolean} True if `outerNode` contains or is `innerNode`.
  */
 function containsNode(outerNode, innerNode) {
   if (!outerNode || !innerNode) {
@@ -28124,7 +28125,7 @@ function containsNode(outerNode, innerNode) {
     return false;
   } else if (isTextNode(innerNode)) {
     return containsNode(outerNode, innerNode.parentNode);
-  } else if ('contains' in outerNode) {
+  } else if (outerNode.contains) {
     return outerNode.contains(innerNode);
   } else if (outerNode.compareDocumentPosition) {
     return !!(outerNode.compareDocumentPosition(innerNode) & 16);
@@ -28360,7 +28361,6 @@ module.exports = createNodesFromMarkup;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- *
  */
 
 function makeEmptyFunction(arg) {
@@ -28374,7 +28374,7 @@ function makeEmptyFunction(arg) {
  * primarily useful idiomatically for overridable function endpoints which
  * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
  */
-var emptyFunction = function emptyFunction() {};
+function emptyFunction() {}
 
 emptyFunction.thatReturns = makeEmptyFunction;
 emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
@@ -28815,7 +28815,7 @@ var invariant = require('./invariant');
  * @param {object} obj
  * @return {object}
  */
-var keyMirror = function keyMirror(obj) {
+var keyMirror = function (obj) {
   var ret = {};
   var key;
   !(obj instanceof Object && !Array.isArray(obj)) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'keyMirror(...): Argument must be an object.') : invariant(false) : void 0;
@@ -28853,7 +28853,7 @@ module.exports = keyMirror;
  * 'xa12' in that case. Resolve keys you want to use once at startup time, then
  * reuse those resolutions.
  */
-var keyOf = function keyOf(oneKeyObj) {
+var keyOf = function (oneKeyObj) {
   var key;
   for (key in oneKeyObj) {
     if (!oneKeyObj.hasOwnProperty(key)) {
@@ -28925,7 +28925,6 @@ module.exports = mapObject;
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- *
  * @typechecks static-only
  */
 
@@ -28933,6 +28932,9 @@ module.exports = mapObject;
 
 /**
  * Memoizes the return value of a function that accepts one string argument.
+ *
+ * @param {function} callback
+ * @return {function}
  */
 
 function memoizeStringOnly(callback) {
@@ -28993,11 +28995,11 @@ var performanceNow;
  * because of Facebook's testing infrastructure.
  */
 if (performance.now) {
-  performanceNow = function performanceNow() {
+  performanceNow = function () {
     return performance.now();
   };
 } else {
-  performanceNow = function performanceNow() {
+  performanceNow = function () {
     return Date.now();
   };
 }
@@ -29013,7 +29015,7 @@ module.exports = performanceNow;
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @typechecks
- *
+ * 
  */
 
 /*eslint-disable no-self-compare */
@@ -29096,7 +29098,7 @@ var emptyFunction = require('./emptyFunction');
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  warning = function warning(condition, format) {
+  warning = function (condition, format) {
     for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
       args[_key - 2] = arguments[_key];
     }
@@ -29130,8 +29132,8 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = warning;
 }).call(this,require('_process'))
 },{"./emptyFunction":146,"_process":1}],165:[function(require,module,exports){
-'use strict';
 /* eslint-disable no-unused-vars */
+'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -29143,51 +29145,7 @@ function toObject(val) {
 	return Object(val);
 }
 
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (e) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+module.exports = Object.assign || function (target, source) {
 	var from;
 	var to = toObject(target);
 	var symbols;
@@ -29223,12 +29181,44 @@ module.exports = require('./lib/React');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var App = require('./components/App.jsx');
+var Sendqueue = require('./components/Sendqueue.js');
 
 ReactDOM.render(React.createElement(App, null), document.getElementById('container'));
 
-},{"./components/App.jsx":168,"react":166,"react-dom":3}],168:[function(require,module,exports){
+setInterval(function () {
+  Sendqueue.sendAll();
+}, 60000);
+
+var hidden, visibilityChange;
+if (typeof document.hidden !== "undefined") {
+  // Opera 12.10 and Firefox 18 and later support
+  hidden = "hidden";
+  visibilityChange = "visibilitychange";
+} else if (typeof document.mozHidden !== "undefined") {
+  hidden = "mozHidden";
+  visibilityChange = "mozvisibilitychange";
+} else if (typeof document.msHidden !== "undefined") {
+  hidden = "msHidden";
+  visibilityChange = "msvisibilitychange";
+} else if (typeof document.webkitHidden !== "undefined") {
+  hidden = "webkitHidden";
+  visibilityChange = "webkitvisibilitychange";
+}
+
+function handleVisibilityChange() {
+  if (document[hidden]) {
+    // do nothing
+  } else {
+      Sendqueue.sendAll();
+    }
+}
+
+document.addEventListener(visibilityChange, handleVisibilityChange, false);
+
+},{"./components/App.jsx":168,"./components/Sendqueue.js":175,"react":166,"react-dom":3}],168:[function(require,module,exports){
 var React = require('react');
 var jQuery = require('jquery');
+var Config = require('./Config.js');
 var $ = jQuery;
 var Header = require('./Header.jsx');
 var ConstructionSitesList = require('./ConstructionSitesList.jsx');
@@ -29243,12 +29233,12 @@ var App = React.createClass({
   getInitialState: function () {
     return {
       component: React.createElement(ConstructionSitesList, { app: this }),
-      user: StateManager.get(this, 'user', 'http://localhost/instance-honolulu/public/api/user')
+      user: StateManager.get(this, 'user', Config.apiUrl + '/user')
     };
   },
 
   render: function () {
-    Sendqueue.sendAll();
+    $("html, body").animate({ scrollTop: 0 }, 0);
     if (this.state.user) {
       if (this.state.user.type !== null) {
         return this.renderContainer();
@@ -29264,29 +29254,45 @@ var App = React.createClass({
     return React.createElement(
       'div',
       null,
-      React.createElement(Header, null),
+      React.createElement(Header, { app: this }),
       React.createElement(
         'main',
         null,
         this.state.component
       ),
-      React.createElement(Footer, null)
+      React.createElement(Footer, { app: this })
     );
   },
 
   renderLoading: function () {
     return React.createElement(
-      'main',
+      'div',
       null,
-      'Loading...'
+      React.createElement(Header, { app: this }),
+      React.createElement(
+        'main',
+        null,
+        React.createElement(
+          'div',
+          { className: "loader" },
+          'Loading...'
+        )
+      ),
+      React.createElement(Footer, { app: this })
     );
   },
 
   renderNoData: function () {
     return React.createElement(
-      'main',
+      'div',
       null,
-      'Not connected and no data cached.'
+      React.createElement(Header, { app: this }),
+      React.createElement(
+        'main',
+        null,
+        'Not connected and no data cached.'
+      ),
+      React.createElement(Footer, { app: this })
     );
   }
 
@@ -29294,7 +29300,15 @@ var App = React.createClass({
 
 module.exports = App;
 
-},{"./ConstructionSitesList.jsx":171,"./Footer.jsx":172,"./Header.jsx":173,"./Sendqueue.js":174,"./Statemanager.js":175,"jquery":2,"react":166}],169:[function(require,module,exports){
+},{"./Config.js":169,"./ConstructionSitesList.jsx":172,"./Footer.jsx":173,"./Header.jsx":174,"./Sendqueue.js":175,"./Statemanager.js":176,"jquery":2,"react":166}],169:[function(require,module,exports){
+var Config = {
+    apiUrl: 'http://localhost/instance-honolulu/public/api',
+    fullUrl: 'http://localhost/instance-honolulu/public'
+};
+
+module.exports = Config;
+
+},{}],170:[function(require,module,exports){
 var React = require('react');
 var jQuery = require('jquery');
 var $ = jQuery;
@@ -29315,7 +29329,7 @@ var ConstructionSite = React.createClass({
             null,
             React.createElement(
                 'h2',
-                null,
+                { className: 'bottom-space' },
                 location.name
             ),
             React.createElement(
@@ -29327,6 +29341,11 @@ var ConstructionSite = React.createClass({
                 'button',
                 { className: 'button-default bottom-space', onClick: this.constructionSitesListHandler },
                 'Back to Construction Sites'
+            ),
+            React.createElement(
+                'h4',
+                null,
+                'Site'
             ),
             React.createElement(
                 'ul',
@@ -29642,17 +29661,6 @@ var ConstructionSite = React.createClass({
                     React.createElement(
                         'strong',
                         null,
-                        'NPDES Permit Number:'
-                    ),
-                    ' ',
-                    location.npdes_permit_number
-                ),
-                React.createElement(
-                    'li',
-                    null,
-                    React.createElement(
-                        'strong',
-                        null,
                         'Building Permit Number:'
                     ),
                     ' ',
@@ -29701,8 +29709,8 @@ var ConstructionSite = React.createClass({
     },
 
     constructionSiteOversightInspectionHandler: function () {
-        var previousProps = this.props;
-        var constructionSiteOversightInspection = React.createElement(ConstructionSiteOversightInspection, { app: this.props.app, location: this.props.location, previous: ConstructionSite, previousProps: previousProps });
+        var previousProps = { app: this.props.app };
+        var constructionSiteOversightInspection = React.createElement(ConstructionSiteOversightInspection, { app: this.props.app, location: this.props.location, previous: this.props.previous, previousProps: previousProps });
         this.props.app.setState({
             component: constructionSiteOversightInspection
         });
@@ -29729,9 +29737,10 @@ var ConstructionSite = React.createClass({
 
 module.exports = ConstructionSite;
 
-},{"./ConstructionSiteOversightInspection.jsx":170,"./Statemanager.js":175,"jquery":2,"react":166}],170:[function(require,module,exports){
+},{"./ConstructionSiteOversightInspection.jsx":171,"./Statemanager.js":176,"jquery":2,"react":166}],171:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Config = require('./Config.js');
 var jQuery = require('jquery');
 var StateManager = require('./Statemanager.js');
 var Sendqueue = require('./Sendqueue.js');
@@ -29744,7 +29753,7 @@ var ConstructionSiteOversightInspection = React.createClass({
   displayName: 'ConstructionSiteOversightInspection',
 
 
-  endpoint: 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection',
+  endpoint: Config.apiUrl + '/construction/locations/oversight-inspection',
 
   getInitialState: function () {
     return {
@@ -29777,18 +29786,18 @@ var ConstructionSiteOversightInspection = React.createClass({
       null,
       React.createElement(
         'h2',
-        null,
+        { className: 'bottom-space' },
         'Oversight Inspection Form'
       ),
       React.createElement('div', null),
       React.createElement(
         'button',
-        { className: 'button-primary full-width bottom-space', type: 'button', onClick: this.submitForm },
+        { className: 'button-success full-width bottom-space', type: 'button', onClick: this.submitForm },
         'Submit'
       ),
       React.createElement(
         'button',
-        { className: 'button-warning full-width', type: 'button', onClick: this.leaveForm },
+        { className: 'button-default full-width', type: 'button', onClick: this.leaveForm },
         'Cancel'
       )
     );
@@ -29803,8 +29812,9 @@ var ConstructionSiteOversightInspection = React.createClass({
   },
 
   submitForm: function () {
-    var values = {};
-    $(this.state.form).find('[name]').each(function () {
+    var values = {},
+        el = ReactDOM.findDOMNode(this);
+    $(el).find('div > form').find('[name]').each(function () {
       if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
         if ($(this).is(':checked')) {
           values[$(this).attr('name')] = $(this).val();
@@ -29825,8 +29835,6 @@ var ConstructionSiteOversightInspection = React.createClass({
 
     props.app = this.props.app;
     props.location = this.props.location;
-
-    console.log(props);
 
     constructionSite = React.createElement(this.props.previous, props);
 
@@ -29855,9 +29863,10 @@ var ConstructionSiteOversightInspection = React.createClass({
 
 module.exports = ConstructionSiteOversightInspection;
 
-},{"./Sendqueue.js":174,"./Statemanager.js":175,"./Xformr.js":176,"jquery":2,"react":166,"react-dom":3}],171:[function(require,module,exports){
+},{"./Config.js":169,"./Sendqueue.js":175,"./Statemanager.js":176,"./Xformr.js":178,"jquery":2,"react":166,"react-dom":3}],172:[function(require,module,exports){
 var React = require('react');
 var jQuery = require('jquery');
+var Config = require('./Config.js');
 var $ = jQuery;
 var StateManager = require('./Statemanager.js');
 var ConstructionSite = require('./ConstructionSite.jsx');
@@ -29868,8 +29877,8 @@ var ConstructionSitesList = React.createClass({
 
   getInitialState: function () {
     return {
-      constructionLocations: StateManager.get(this, 'constructionLocations', 'http://localhost/instance-honolulu/public/api/construction/locations'),
-      constructionLocationOversightInspection: StateManager.get(this, 'constructionLocationOversightInspection', 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection')
+      constructionLocations: StateManager.get(this, 'constructionLocations', Config.apiUrl + '/construction/locations'),
+      constructionLocationOversightInspection: StateManager.get(this, 'constructionLocationOversightInspection', Config.apiUrl + '/construction/locations/oversight-inspection')
     };
   },
 
@@ -29925,7 +29934,11 @@ var ConstructionSitesList = React.createClass({
     return React.createElement(
       'div',
       null,
-      'Loading...'
+      React.createElement(
+        'div',
+        { className: "loader" },
+        'Loading...'
+      )
     );
   },
 
@@ -29948,8 +29961,10 @@ var ConstructionSitesList = React.createClass({
 
 module.exports = ConstructionSitesList;
 
-},{"./ConstructionSite.jsx":169,"./Statemanager.js":175,"jquery":2,"react":166}],172:[function(require,module,exports){
+},{"./Config.js":169,"./ConstructionSite.jsx":170,"./Statemanager.js":176,"jquery":2,"react":166}],173:[function(require,module,exports){
 var React = require('react');
+var Config = require('./Config.js');
+var SyncStatus = require('./SyncStatus.jsx');
 
 var Footer = React.createClass({
   displayName: 'Footer',
@@ -29961,17 +29976,34 @@ var Footer = React.createClass({
       null,
       React.createElement(
         'a',
-        { className: 'button-secondary full-width', href: '#' },
-        'Visit Full Site'
+        { href: '#', onClick: this.syncStatusHandler },
+        'View Sync Status'
+      ),
+      ' • ',
+      React.createElement(
+        'a',
+        { href: Config.fullUrl, target: '_blank' },
+        React.createElement(
+          'strong',
+          null,
+          'Visit Full Site'
+        )
       )
     );
+  },
+
+  syncStatusHandler: function () {
+    var syncStatus = React.createElement(SyncStatus, { app: this.props.app });
+    this.props.app.setState({
+      component: syncStatus
+    });
   }
 
 });
 
 module.exports = Footer;
 
-},{"react":166}],173:[function(require,module,exports){
+},{"./Config.js":169,"./SyncStatus.jsx":177,"react":166}],174:[function(require,module,exports){
 var React = require('react');
 
 var Header = React.createClass({
@@ -29985,7 +30017,7 @@ var Header = React.createClass({
       React.createElement(
         'h1',
         null,
-        'ch2m Honolulu'
+        'ch2m Honolulu Mobile'
       )
     );
   }
@@ -29994,7 +30026,7 @@ var Header = React.createClass({
 
 module.exports = Header;
 
-},{"react":166}],174:[function(require,module,exports){
+},{"react":166}],175:[function(require,module,exports){
 var Sendqueue = new function () {
 
     var QUEUE_NAME = "api-queue",
@@ -30008,7 +30040,6 @@ var Sendqueue = new function () {
             },
             data: data,
             success: function (result) {
-                console.log(result);
                 if (shouldSendAll !== false) self.sendAll();
             },
             error: function () {
@@ -30043,17 +30074,33 @@ var Sendqueue = new function () {
             self.send(item.endpoint, item.data, false);
         });
     };
+
+    this.getAll = function () {
+
+        var currentQueue = localStorage.getItem(QUEUE_NAME);
+
+        if (!currentQueue) return [];
+
+        currentQueue = JSON.parse(currentQueue);
+
+        return currentQueue;
+    };
 }();
 
 module.exports = Sendqueue;
 
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 var jQuery = require('jquery');
 var $ = jQuery;
 
 var Statemanager = new function () {
 
     var results = {};
+
+    this.getStored = function (stateDataName) {
+        var storedResult = localStorage.getItem("state-" + stateDataName);
+        return storedResult ? JSON.parse(storedResult) : null;
+    };
 
     this.get = function (context, stateDataName, url) {
 
@@ -30111,8 +30158,6 @@ var Statemanager = new function () {
                             state[stateDataName] = { type: null };
                             context.setState(state);
                         }
-                        console.log(storedResult);
-                        console.log(jqXHR, textStatus, errorThrown);
                 }
             }
         });
@@ -30123,7 +30168,148 @@ var Statemanager = new function () {
 
 module.exports = Statemanager;
 
-},{"jquery":2}],176:[function(require,module,exports){
+},{"jquery":2}],177:[function(require,module,exports){
+// NOTE: This component is not currently in use!!!!
+
+var React = require('react');
+var jQuery = require('jquery');
+var $ = jQuery;
+var StateManager = require('./Statemanager.js');
+var Sendqueue = require('./Sendqueue.js');
+var ConstructionSitesList = require('./ConstructionSitesList.jsx');
+
+var SyncStatus = React.createClass({
+    displayName: 'SyncStatus',
+
+
+    render: function () {
+
+        var uploadList = [];
+        $.each(Sendqueue.getAll(), function (idx, inspection) {
+            uploadList.push(React.createElement(
+                'li',
+                null,
+                inspection.data.project_name,
+                ' on ',
+                inspection.data.current_inspection_date
+            ));
+        });
+        if (uploadList.length == 0) uploadList.push(React.createElement(
+            'li',
+            null,
+            React.createElement(
+                'em',
+                null,
+                'All inspections have been upload to CloudCompli'
+            )
+        ));else uploadList.push(React.createElement(
+            'li',
+            null,
+            React.createElement(
+                'button',
+                { onClick: this.uploadHandler, className: 'button-success full-width' },
+                'Upload Now'
+            )
+        ));
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                'h2',
+                { className: 'bottom-space' },
+                'Sync Status'
+            ),
+            React.createElement(
+                'h4',
+                null,
+                'Latest Download'
+            ),
+            React.createElement(
+                'ul',
+                null,
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        'strong',
+                        null,
+                        'User:'
+                    ),
+                    ' ',
+                    this._getStateDataDate('user')
+                ),
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        'strong',
+                        null,
+                        'Construction Locations:'
+                    ),
+                    ' ',
+                    this._getStateDataDate('constructionLocations')
+                )
+            ),
+            React.createElement(
+                'h4',
+                null,
+                'Awaiting Upload'
+            ),
+            React.createElement(
+                'ul',
+                null,
+                uploadList
+            ),
+            React.createElement(
+                'button',
+                { onClick: this.constructionSitesListHandler, className: 'button-default full-width' },
+                'Back to Construction Sites'
+            )
+        );
+    },
+
+    _getStateDataDate: function (stateDataName) {
+        var stateData = StateManager.getStored(stateDataName);
+        if (stateData && stateData.synced_on) {
+            var date = new Date(stateData.synced_on),
+                hours = parseInt(date.getHours()),
+                minutes = date.getMinutes().toString(),
+                ampm = 'AM';
+            if (hours > 12) {
+                ampm = 'PM';
+                hours = hours - 12;
+            } else if (hours == 12) {
+                ampm = 'PM';
+            } else if (hours == 0) {
+                hours = 12;
+            }
+            if (minutes.length == 1) {
+                minutes = '0' + minutes;
+            }
+            return '' + date.getMonth() + '/' + date.getDay() + '/' + date.getFullYear() + ' ' + hours + ':' + minutes + ' ' + ampm;
+        } else {
+            return '';
+        }
+    },
+
+    constructionSitesListHandler: function () {
+        var constructionSitesList = React.createElement(ConstructionSitesList, { app: this.props.app });
+        this.props.app.setState({
+            component: constructionSitesList
+        });
+    },
+
+    uploadHandler: function () {
+        Sendqueue.sendAll();
+        this.constructionSitesListHandler();
+    }
+
+});
+
+module.exports = SyncStatus;
+
+},{"./ConstructionSitesList.jsx":172,"./Sendqueue.js":175,"./Statemanager.js":176,"jquery":2,"react":166}],178:[function(require,module,exports){
 var XFormR = function () {
 
     var renderers = {};

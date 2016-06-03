@@ -12,9 +12,10 @@ var ConstructionSite = React.createClass({
       margin: '15px 0 0 0',
     };
     return <div>
-        <h2>{ location.name }</h2>
+        <h2 className={('bottom-space')}>{ location.name }</h2>
         <button className={('button-primary bottom-space right-space')} onClick={this.constructionSiteOversightInspectionHandler}>Perform Inspection</button>
         <button className={('button-default bottom-space')} onClick={this.constructionSitesListHandler}>Back to Construction Sites</button>
+        <h4>Site</h4>
         <ul>
             <li><strong>Address:</strong> { this._formatAddress() }</li>
             <li><strong>Latitude:</strong> { location.latitude }</li>
@@ -50,7 +51,6 @@ var ConstructionSite = React.createClass({
             <li><strong>NPDES Permit Number:</strong> { location.npdes_permit_number }</li>
             <li><strong>NGPC Number C:</strong> { location.ngpc_number_c }</li>
             <li><strong>NGPC Number G:</strong> { location.ngpc_number_g }</li>
-            <li><strong>NPDES Permit Number:</strong> { location.npdes_permit_number }</li>
             <li><strong>Building Permit Number:</strong> { location.building_permit_number }</li>
             <li><strong>Grading Permit Number:</strong> { location.grading_permit_number }</li>
             <li><strong>Grubbing Permit Number:</strong> { location.grubbing_permit_number }</li>
@@ -61,8 +61,8 @@ var ConstructionSite = React.createClass({
   },
 
   constructionSiteOversightInspectionHandler: function(){
-    var previousProps = this.props;
-    var constructionSiteOversightInspection = <ConstructionSiteOversightInspection app={this.props.app} location={this.props.location} previous={ConstructionSite} previousProps={previousProps} />;
+    var previousProps = {app: this.props.app};
+    var constructionSiteOversightInspection = <ConstructionSiteOversightInspection app={this.props.app} location={this.props.location} previous={this.props.previous} previousProps={previousProps} />;
     this.props.app.setState({
         component: constructionSiteOversightInspection
     });

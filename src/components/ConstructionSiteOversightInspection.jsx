@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Config = require('./Config.js');
 var jQuery = require('jquery');
 var StateManager = require('./Statemanager.js');
 var Sendqueue = require('./Sendqueue.js');
@@ -10,7 +11,7 @@ $ = jQuery;
 
 var ConstructionSiteOversightInspection = React.createClass({
 
-  endpoint: 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection',
+  endpoint: Config.apiUrl+'/construction/locations/oversight-inspection',
 
   getInitialState: function(){
     return {
@@ -39,10 +40,10 @@ var ConstructionSiteOversightInspection = React.createClass({
 
   renderReady: function() {
     return <div>
-        <h2>Oversight Inspection Form</h2>
+        <h2 className={('bottom-space')}>Oversight Inspection Form</h2>
         <div></div>
-        <button className={('button-primary full-width bottom-space')} type="button" onClick={this.submitForm}>Submit</button>
-        <button className={('button-warning full-width')} type="button" onClick={this.leaveForm}>Cancel</button>
+        <button className={('button-success full-width bottom-space')} type="button" onClick={this.submitForm}>Submit</button>
+        <button className={('button-default full-width')} type="button" onClick={this.leaveForm}>Cancel</button>
     </div>
   },
 
@@ -51,8 +52,9 @@ var ConstructionSiteOversightInspection = React.createClass({
   },
 
   submitForm: function(){
-    var values = {};
-    $(this.state.form).find('[name]').each(function(){
+    var values = {},
+        el = ReactDOM.findDOMNode(this);
+    $(el).find('div > form').find('[name]').each(function(){
         if($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio'){
             if($(this).is(':checked')){
                 values[$(this).attr('name')] = $(this).val();
@@ -73,8 +75,6 @@ var ConstructionSiteOversightInspection = React.createClass({
 
     props.app = this.props.app;
     props.location = this.props.location;
-
-    console.log(props);
 
     constructionSite = React.createElement(this.props.previous, props);
 

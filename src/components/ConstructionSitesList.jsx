@@ -1,5 +1,6 @@
 var React = require('react');
 var jQuery = require('jquery');
+var Config = require('./Config.js');
 var $ = jQuery;
 var StateManager = require('./Statemanager.js');
 var ConstructionSite = require('./ConstructionSite.jsx');
@@ -9,9 +10,9 @@ var ConstructionSitesList = React.createClass({
   getInitialState: function(){
     return {
         constructionLocations: StateManager.get(this, 'constructionLocations',
-                    'http://localhost/instance-honolulu/public/api/construction/locations'),
+                    Config.apiUrl+'/construction/locations'),
         constructionLocationOversightInspection: StateManager.get(this, 'constructionLocationOversightInspection',
-                    'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection')
+                    Config.apiUrl+'/construction/locations/oversight-inspection')
     };
   },
 
@@ -47,7 +48,7 @@ var ConstructionSitesList = React.createClass({
 
   renderLoading: function() {
     return <div>
-        Loading...
+        <div className={("loader")}>Loading...</div>
       </div>;
   },
 
