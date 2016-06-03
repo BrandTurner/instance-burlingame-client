@@ -5,7 +5,7 @@ require_once dirname(dirname(__FILE__)).'/vendor/autoload.php';
 use CloudCompli\InstanceClient\OAuth2Provider;
 use CloudCompli\InstanceClient\OAuth2Session;
 
-$cloudcompliUrl = 'http://localhost/instance-honolulu/public';
+$cloudcompliUrl = 'http://localhost/sites/instance-honolulu/public';
 $clientId = 'mobileid';
 $clientSecret = 'mobilepass';
 $scriptUrl = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].(($_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') ? (':'.$_SERVER['SERVER_PORT']) : '').$_SERVER['SCRIPT_NAME'];
@@ -38,11 +38,11 @@ if (!isset($_GET['code'])) {
             'code' => $_GET['code'],
             'verify' => false
         ]);
-        
+
         $session = new OAuth2Session($provider, $accessToken);
         $request = $session->getRequest('user');
         $authorization = $request->getHeader('Authorization');
-        
+
         ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +58,7 @@ if (!isset($_GET['code'])) {
 </html>
 
         <?php
-        
+
 
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
 

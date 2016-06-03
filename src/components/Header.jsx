@@ -3,7 +3,7 @@ var React = require('react');
 var Header = React.createClass({
 
   render: function() {
-    return <header>
+    return <header className={('masthead')}>
       <h1>ch2m Honolulu</h1>
     </header>;
   }

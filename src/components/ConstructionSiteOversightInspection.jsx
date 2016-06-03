@@ -10,7 +10,7 @@ $ = jQuery;
 
 var ConstructionSiteOversightInspection = React.createClass({
 
-  endpoint: 'http://localhost/instance-honolulu/public/api/construction/locations/oversight-inspection',
+  endpoint: 'http://localhost/sites/instance-honolulu/public/api/construction/locations/oversight-inspection',
 
   getInitialState: function(){
     return {
@@ -39,10 +39,10 @@ var ConstructionSiteOversightInspection = React.createClass({
 
   renderReady: function() {
     return <div>
-        <h4>Oversight Inspection Form</h4>
+        <h2>Oversight Inspection Form</h2>
         <div></div>
-        <button type="button" onClick={this.submitForm}>Submit</button>
-        <button type="button" onClick={this.leaveForm}>Cancel</button>
+        <button className={('button-primary full-width bottom-space')} type="button" onClick={this.submitForm}>Submit</button>
+        <button className={('button-warning full-width')} type="button" onClick={this.leaveForm}>Cancel</button>
     </div>
   },
 
@@ -68,7 +68,7 @@ var ConstructionSiteOversightInspection = React.createClass({
 
   leaveForm: function(){
 
-    var props = this.props.previousProps, 
+    var props = this.props.previousProps,
         constructionSite;
 
     props.app = this.props.app;

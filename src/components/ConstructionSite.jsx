@@ -8,10 +8,13 @@ var ConstructionSite = React.createClass({
 
   render: function() {
     var location = this.props.location;
+    var topSpace = {
+      margin: '15px 0 0 0',
+    };
     return <div>
         <h2>{ location.name }</h2>
-        <button onClick={this.constructionSiteOversightInspectionHandler}>Perform Inspection</button>
-        <button onClick={this.constructionSitesListHandler}>Back to Construction Sites</button>
+        <button className={('button-primary bottom-space right-space')} onClick={this.constructionSiteOversightInspectionHandler}>Perform Inspection</button>
+        <button className={('button-default bottom-space')} onClick={this.constructionSitesListHandler}>Back to Construction Sites</button>
         <ul>
             <li><strong>Address:</strong> { this._formatAddress() }</li>
             <li><strong>Latitude:</strong> { location.latitude }</li>
@@ -53,7 +56,7 @@ var ConstructionSite = React.createClass({
             <li><strong>Grubbing Permit Number:</strong> { location.grubbing_permit_number }</li>
             <li><strong>Stockpiling Permit Number:</strong> { location.stockpiling_permit_number }</li>
         </ul>
-        <button onClick={this.constructionSitesListHandler}>Back to Construction Sites</button>
+        <button className={('button-default full-width')} onClick={this.constructionSitesListHandler}>Back to Construction Sites</button>
     </div>
   },
 
